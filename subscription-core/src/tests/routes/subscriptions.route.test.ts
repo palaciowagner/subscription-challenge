@@ -124,7 +124,7 @@ describe('Subscriptions Integration Tests', () => {
         .fn()
         .mockReturnValueOnce({ ...mockFindOne })
         .mockReturnValueOnce({ ...mockFindOne, isActive: true });
-        
+
       const updateSpy = jest.spyOn(subscriptionsRepository, 'update');
       emailProducerMock.send = jest.fn();
 
@@ -151,8 +151,12 @@ describe('Subscriptions Integration Tests', () => {
       const subscriptionsRepository = getRepository(SubscriptionEntity);
 
       const app = new App([subscriptionsRoute]);
-      return await request(app.getServer()).post(`${subscriptionsRoute.path}`).set('X-Api-Key', `ANOTHER-WRONG-KEY`).send(subscriptionRequest).expect(401);
-    })
+      return await request(app.getServer())
+        .post(`${subscriptionsRoute.path}`)
+        .set('X-Api-Key', `ANOTHER-WRONG-KEY`)
+        .send(subscriptionRequest)
+        .expect(401);
+    });
   });
 
   describe('[GET] /subscriptions/:email', () => {
@@ -226,7 +230,6 @@ describe('Subscriptions Integration Tests', () => {
 
       const app = new App([subscriptionRoute]);
       return request(app.getServer()).get(`${subscriptionRoute.path}`).expect(200);
-      // TODO - extend expect to check content
     });
 
     it('should return 204 NO CONTENT when there are no subscriptions', async () => {
@@ -264,7 +267,6 @@ describe('Subscriptions Integration Tests', () => {
 
       const app = new App([subscriptionRoute]);
       return request(app.getServer()).put(`${subscriptionRoute.path}/${subscriptionEmail}/cancel`).expect(200);
-      // TODO - extend expect to check content
     });
 
     it('should return 404 when subscription does not exist', async () => {
@@ -277,7 +279,6 @@ describe('Subscriptions Integration Tests', () => {
 
       const app = new App([subscriptionRoute]);
       return request(app.getServer()).put(`${subscriptionRoute.path}/${subscriptionEmail}/cancel`).expect(404);
-      // TODO - extend expect to check content
     });
   });
 });

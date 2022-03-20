@@ -1,5 +1,4 @@
 import supertest from 'supertest';
-import { SECRET_KEY } from '@/config';
 
 const hook =
   (app: any, method: string = 'post', apiKey = 'secretKey') =>
@@ -14,4 +13,4 @@ const request = app => ({
   delete: hook(app, 'delete'),
 });
 
-export default request
+export default request;
