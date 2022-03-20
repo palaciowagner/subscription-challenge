@@ -1,3 +1,4 @@
+import { HttpException } from '@/exceptions/HttpException';
 import { Subscription } from '@/interfaces/subscription.interface';
 import SubscriptionsService from '@/services/subscriptions.service';
 import { logger } from '@/utils/logger';
@@ -10,9 +11,9 @@ export default class SubscriptionsController {
   public getAllSubscriptions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const findAllSubscriptionsResponse: Subscription[] = await this.subscriptionService.findAllSubscriptions();
+      if (findAllSubscriptionsResponse.length < 1) throw new HttpException(204, `No subscriptions found`);
+
       const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom(findAllSubscriptionsResponse);
-      console.log(findAllSubscriptionsResponse);
-      console.log(subscriptionResponseDto);
 
       res.status(200).json({ data: subscriptionResponseDto, message: 'found' });
     } catch (error) {

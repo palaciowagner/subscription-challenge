@@ -11,7 +11,7 @@ afterAll(async () => {
 
 describe('Subscriptions Route', () => {
   describe('[GET] /subscriptions', () => {
-    it('should return all subscriptions', async () => {
+    it('should return status 200 OK and return all subscriptions', async () => {
       const subscriptionsRoute = new SubscriptionsRoute();
       subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
       const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
@@ -51,6 +51,18 @@ describe('Subscriptions Route', () => {
       const app = new App([subscriptionsRoute]);
       const content = await request(app.getServer()).get(`${subscriptionsRoute.path}`).expect(200);
       expect(content.text).toContain(JSON.stringify(mockedResponse));
+    });
+
+    it('should return 204 NO CONTENT and empty data when API does not return subscriptions', async () => {
+      const subscriptionsRoute = new SubscriptionsRoute();
+      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+
+      mockedSubscriptionService.findAllSubscriptions = jest.fn().mockResolvedValue([]);
+
+      const app = new App([subscriptionsRoute]);
+      const content = await request(app.getServer()).get(`${subscriptionsRoute.path}`).expect(204);
+      expect(content.text).toEqual('');
     });
   });
 });
