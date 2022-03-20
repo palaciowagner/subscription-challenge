@@ -1,11 +1,14 @@
 # Common build stage
 FROM node:14.15.0-alpine as common-build-stage
 
-COPY . ./app
-
 WORKDIR /app
 
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
 RUN yarn install
+
+COPY . .
 
 EXPOSE 3000
 

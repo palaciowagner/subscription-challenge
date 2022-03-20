@@ -1,5 +1,5 @@
 # Logs
-logs
+**/logs
 *.log
 yarn-debug.log*
 yarn-error.log*
@@ -27,7 +27,9 @@ coverage
 build/Release
 
 # Dependency directories
+**/node_modules
 node_modules/
+node_modules
 
 # TypeScript cache
 *.tsbuildinfo
@@ -42,14 +44,14 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+**/.env
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/.env.local
 
 # Generate output
-dist
+**/dist
 
 
 # yarn v2

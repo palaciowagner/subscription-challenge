@@ -13,14 +13,14 @@ services:
       - backend
   subscription_core:
     build:
-      context: ./
+      context: ./subscription-core
       target: development-build-stage
       dockerfile: Dockerfile
     container_name: subscription_core
     ports:
       - '3000:3000'
     volumes:
-      - ./:/app
+      - ./subscription-core:/app
       - /app/node_modules
     restart: 'unless-stopped'
     networks:
