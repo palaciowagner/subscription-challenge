@@ -68,7 +68,7 @@ describe('Subscriptions Route', () => {
   });
 
   describe('[POST] /subscriptions', () => {
-    it('should return 201 ACCEPTED and return subscription', async () => {
+    it('should return 201 ACCEPTED and return created subscription', async () => {
       const subscriptionsRoute = new SubscriptionsRoute();
       subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
       const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;

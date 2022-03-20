@@ -24,9 +24,12 @@ export default class SubscriptionsController {
   public createSubscription = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const subscriptionRequest: CreateSubscriptionRequestDto = req.body;
-      const createSubscriptionResponse: Subscription = await this.subscriptionService.createSubscription(subscriptionRequest);
 
-      res.status(201).json({ data: createSubscriptionResponse, message: 'created' });
+      const createdSubscription: Subscription = await this.subscriptionService.createSubscription(subscriptionRequest);
+
+      const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([createdSubscription]);
+
+      res.status(201).json({ data: subscriptionResponseDto, message: 'created' });
     } catch (error) {
       next(error);
     }
