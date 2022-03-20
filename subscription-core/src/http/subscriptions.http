@@ -1,0 +1,29 @@
+# baseURL
+@baseURL = http://localhost:3000
+
+###
+# Find All Subscriptions
+GET {{ baseURL }}/subscriptions
+
+###
+# Find Subscription By Email
+GET {{ baseURL }}/subscriptions/test@test.com
+
+###
+# Create a new Subscription
+POST {{ baseURL }}/subscriptions
+Content-Type: application/json
+
+{
+    "firstName": "Wagner Palacio",
+    "gender": "Other",
+    "email": "test@test.com",
+    "dateOfBirth": "2000-01-01",
+    "flagForConsent": true,
+    "newsletterId": 3043
+}
+
+###
+# Cancel a subscription
+PUT {{ baseURL }}/subscriptions/test@test.com
+Content-Type: application/json

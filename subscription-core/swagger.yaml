@@ -1,0 +1,92 @@
+tags:
+- name: subscription
+  description: Subscriptions API
+
+paths:
+# [GET] All Subscriptions
+  /subscriptions:
+    get:
+      tags:
+      - subscriptions
+      summary: Returns all subscriptions
+      responses:
+        200:
+          description: 'OK'
+        204:
+          description: 'No Content'
+        500:
+          description: 'Server Error'
+        401:
+          description: 'Unauthorized'
+
+# [POST] Subscription
+    post:
+      tags:
+      - subscriptions
+      summary: Creates a new subscription / Activates a subscription if e-mail exists but currently is deactivated
+      parameters:
+      - name: body
+        in: body
+        description: Subscription Data
+        required: true
+        schema:
+          $ref: '#/definitions/subscriptions'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+        
+
+# [GET] Subscription
+  /subscriptions/{email}:
+    get:
+      tags:
+      - subscriptions
+      summary: Gets details of a single Subscription finding by its e-mail
+      parameters:
+      - name: email
+        in: path
+        description: Subscription E-mail
+        required: true
+        type: string
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+        
+
+# [PUT] Cancels subscription by e-mail
+    put:
+      tags:
+      - subscriptions
+      summary: Cancels a subscription, inactivating it in the database
+      parameters:
+      - name: email
+        in: path
+        description: Subscription E-mail
+        required: true
+        type: string
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+        
+
+schemes:
+ - https
+ - http
