@@ -34,4 +34,17 @@ export default class SubscriptionsController {
       next(error);
     }
   };
+
+  public getSubscriptionByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const subscriptionEmail = String(req.params.email);
+      const foundSubscription: Subscription = await this.subscriptionService.getSubscription(subscriptionEmail);
+
+      const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([foundSubscription]);
+
+      res.status(200).json({ data: subscriptionResponseDto, message: 'found' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

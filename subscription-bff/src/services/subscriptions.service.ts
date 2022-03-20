@@ -18,4 +18,11 @@ export default class SubscriptionsService {
 
     return created.data.data;
   }
+
+  public async getSubscription(email: string): Promise<Subscription> {
+    const found = await this.client.get(`/subscriptions/${email}`);
+    if (!found.data) return null;
+
+    return found.data.data;
+  }
 }

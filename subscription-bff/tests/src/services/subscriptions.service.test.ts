@@ -71,4 +71,18 @@ describe('Subscription Service', () => {
       expect(created).toEqual(null);
     });
   });
+
+  describe('Get Subscription', () => {
+    it('should hit api client and return single subscription', async () => {
+      axios.get = jest.fn().mockReturnValue(mockAxiosResponseDefault);
+
+      const subscriptionService = new SubscriptionsService(axios);
+      const email = 'another-test@email.com';
+      const subscriptions = await subscriptionService.getSubscription(email);
+
+      // then
+      expect(axios.get).toHaveBeenCalled();
+      expect(subscriptions).toEqual(mockAxiosResponseDefault.data.data);
+    });
+  });
 });

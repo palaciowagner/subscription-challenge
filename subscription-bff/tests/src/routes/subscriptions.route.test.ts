@@ -95,4 +95,31 @@ describe('Subscriptions Route', () => {
       expect(content.text).toContain(JSON.stringify(createdResponse));
     });
   });
+
+  describe('[GET] /subscriptions/:email', () => {
+    const defaultSubscription = {
+      id: 1,
+      email: 'test@email.com',
+      firstName: 'Wagner',
+      gender: 'Other',
+      dateOfBirth: new Date('1994-04-06').toISOString(),
+      flagForConsent: true,
+      newsletterId: 345,
+    };
+
+    it('should return 200 OK and return found subscription', async () => {
+      const subscriptionsRoute = new SubscriptionsRoute();
+      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+
+      const email = 'test@email.com';
+
+      mockedSubscriptionService.getSubscription = jest.fn().mockResolvedValue(defaultSubscription);
+
+      const app = new App([subscriptionsRoute]);
+      const content = await request(app.getServer()).get(`${subscriptionsRoute.path}/${email}`).expect(200);
+      expect(mockedSubscriptionService.getSubscription).toHaveBeenCalled();
+      expect(content.text).toContain(JSON.stringify(defaultSubscription));
+    });
+  });
 });
