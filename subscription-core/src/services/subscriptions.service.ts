@@ -4,7 +4,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { Subscription } from '@/interfaces/subscription.interface';
 import { isEmpty } from 'class-validator';
 import { EntityRepository, Repository } from 'typeorm';
-import { EmailMessage, EmailProducer } from '@/producers/email.producer';
+import { SubscriptionEmailMessage, EmailProducer } from '@/producers/email.producer';
 
 @EntityRepository()
 class SubscriptionService extends Repository<SubscriptionEntity> {
@@ -16,17 +16,17 @@ class SubscriptionService extends Repository<SubscriptionEntity> {
 
     const findSubscription: Subscription = await SubscriptionEntity.findOne({ where: { email: subscriptionRequest.email } });
 
-    if (!findSubscription){
+    if (!findSubscription) {
       createSubscriptionData = await SubscriptionEntity.create({ ...subscriptionRequest }).save();
-    }
-    else{
+    } else {
       if (findSubscription.isActive) throw new HttpException(409, `A subscription for ${subscriptionRequest.email} already exists`);
-  
+
       await SubscriptionEntity.update({ email: subscriptionRequest.email }, { ...subscriptionRequest, isActive: true });
-      createSubscriptionData =  await SubscriptionEntity.findOne({ where: { email: subscriptionRequest.email } });
+      createSubscriptionData = await SubscriptionEntity.findOne({ where: { email: subscriptionRequest.email } });
     }
 
-    await this.emailProducer.send(createSubscriptionData as EmailMessage);
+    this.emailProducer.send(createSubscriptionData as SubscriptionEmailMessage); 
+
     return createSubscriptionData;
   }
 
