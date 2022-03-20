@@ -23,6 +23,7 @@
       "types": ["@types/jest"],
       "paths": {
         "@/*": ["*"],
+        "@clients/*": ["clients/*"],
         "@config": ["config"],
         "@controllers/*": ["controllers/*"],
         "@dtos/*": ["dtos/*"],
@@ -34,7 +35,7 @@
         "@utils/*": ["utils/*"]
       }
     },
-    "include": ["src/**/*.ts", "src/**/*.json", ".env"],
+    "include": ["src/**/*.ts", "src/**/*.json", ".env", "tests/**/*.test.ts"],
     "exclude": ["node_modules", "src/http", "src/logs"]
   }
   
