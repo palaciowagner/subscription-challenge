@@ -1,18 +1,20 @@
 # compiled output
-.vscode
+**/.vscode
 /node_modules
+node_modules/
+**/node_modules/
 
 # code formatter
-.eslintrc
-.eslintignore
-.editorconfig
-.huskyrc
-.lintstagedrc.json
-.prettierrc
+**/.eslintrc
+**/.eslintignore
+**/.editorconfig
+**/.huskyrc
+**/.lintstagedrc.json
+**/.prettierrc
 
 # test
-jest.config.js
+**/jest.config.js
 
 # docker
-Dockerfile
-docker-compose.yml
+**/Dockerfile
+**/docker-compose.yml
