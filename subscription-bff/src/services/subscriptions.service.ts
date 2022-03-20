@@ -25,4 +25,8 @@ export default class SubscriptionsService {
 
     return found.data.data;
   }
+  
+  public async cancel(email: string): Promise<void> {
+    await this.client.put(`/subscriptions/${email}/cancel`);
+  }
 }

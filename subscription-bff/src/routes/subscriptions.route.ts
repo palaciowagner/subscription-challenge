@@ -16,6 +16,6 @@ export default class SubscriptionsRoute implements Routes {
     this.router.post(`${this.path}`, validationMiddleware(CreateSubscriptionRequestDto, 'body'), this.subscriptionsController.createSubscription);
     this.router.get(`${this.path}`, this.subscriptionsController.getAllSubscriptions);
     this.router.get(`${this.path}/:email`, this.subscriptionsController.getSubscriptionByEmail);
-    // this.router.put(`${this.path}/:email/cancel`, this.subscriptionsController.cancelSubscription);
+    this.router.put(`${this.path}/:email/cancel`, this.subscriptionsController.cancelSubscriptionByEmail);
   }
 }

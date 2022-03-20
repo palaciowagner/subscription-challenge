@@ -122,4 +122,21 @@ describe('Subscriptions Route', () => {
       expect(content.text).toContain(JSON.stringify(defaultSubscription));
     });
   });
+
+  describe('[PUT] /subscriptions/:email/cancel', () => {
+    it('should accept cancel request and return 201 ACCEPTED', async () => {
+      const subscriptionsRoute = new SubscriptionsRoute();
+      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+
+      const email = 'test@email.com';
+
+      mockedSubscriptionService.cancel = jest.fn();
+
+      const app = new App([subscriptionsRoute]);
+      const content = await request(app.getServer()).put(`${subscriptionsRoute.path}/${email}/cancel`).expect(201);
+      expect(mockedSubscriptionService.cancel).toHaveBeenCalled();
+      expect(content.text).toContain(JSON.stringify({ message: `Subscription cancel request for ${email} was accepted` }));
+    });
+  });
 });

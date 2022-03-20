@@ -47,4 +47,15 @@ export default class SubscriptionsController {
       next(error);
     }
   };
+
+  public cancelSubscriptionByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const subscriptionEmail = String(req.params.email);
+      this.subscriptionService.cancel(subscriptionEmail);
+
+      res.status(201).json({ message: `Subscription cancel request for ${subscriptionEmail} was accepted` });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

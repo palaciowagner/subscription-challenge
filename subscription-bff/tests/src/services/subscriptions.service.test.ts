@@ -32,14 +32,11 @@ describe('Subscription Service', () => {
 
   describe('Get All Subscriptions', () => {
     it('should hit api client and return all subscriptions', async () => {
-      // given
-
       axios.get = jest.fn().mockReturnValue(mockAxiosResponseDefault);
 
       const subscriptionService = new SubscriptionsService(axios);
       const subscriptions = await subscriptionService.findAllSubscriptions();
 
-      // then
       expect(axios.get).toHaveBeenCalled();
       expect(subscriptions).toEqual(mockAxiosResponseDefault.data.data);
     });
@@ -54,7 +51,6 @@ describe('Subscription Service', () => {
 
       const created = await subscriptionService.createSubscription(defaultRequestDto);
 
-      // then
       expect(axios.post).toHaveBeenCalledTimes(1);
       expect(created).toEqual(mockAxiosResponseDefault.data.data);
     });
@@ -66,7 +62,6 @@ describe('Subscription Service', () => {
 
       const created = await subscriptionService.createSubscription(defaultRequestDto);
 
-      // then
       expect(axios.post).toHaveBeenCalledTimes(1);
       expect(created).toEqual(null);
     });
@@ -80,9 +75,20 @@ describe('Subscription Service', () => {
       const email = 'another-test@email.com';
       const subscriptions = await subscriptionService.getSubscription(email);
 
-      // then
       expect(axios.get).toHaveBeenCalled();
       expect(subscriptions).toEqual(mockAxiosResponseDefault.data.data);
+    });
+  });
+
+  describe('Cancel Subscription', () => {
+    it('should call API client but not expect its return', async () => {
+      axios.put = jest.fn();
+
+      const subscriptionService = new SubscriptionsService(axios);
+      const email = 'another-test@email.com';
+      await subscriptionService.cancel(email);
+
+      expect(axios.put).toHaveBeenCalled();
     });
   });
 });
