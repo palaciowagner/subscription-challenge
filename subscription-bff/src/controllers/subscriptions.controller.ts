@@ -2,7 +2,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { Subscription } from '@/interfaces/subscription.interface';
 import SubscriptionsService from '@/services/subscriptions.service';
 import { logger } from '@/utils/logger';
-import { SubscriptionResponseDto } from '@dtos/subscription.dto';
+import { CreateSubscriptionRequestDto, SubscriptionResponseDto } from '@dtos/subscription.dto';
 import { NextFunction, Request, Response } from 'express';
 
 export default class SubscriptionsController {
@@ -17,7 +17,17 @@ export default class SubscriptionsController {
 
       res.status(200).json({ data: subscriptionResponseDto, message: 'found' });
     } catch (error) {
-      logger.error(error);
+      next(error);
+    }
+  };
+
+  public createSubscription = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const subscriptionRequest: CreateSubscriptionRequestDto = req.body;
+      const createSubscriptionResponse: Subscription = await this.subscriptionService.createSubscription(subscriptionRequest);
+
+      res.status(201).json({ data: createSubscriptionResponse, message: 'created' });
+    } catch (error) {
       next(error);
     }
   };

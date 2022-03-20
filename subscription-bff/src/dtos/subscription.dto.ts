@@ -1,4 +1,5 @@
 import { Subscription } from '@/interfaces/subscription.interface';
+import { IsBoolean, IsDateString, IsEmail, IsNumber, IsOptional, IsString, IS_ISO8601 } from 'class-validator';
 
 interface SubscriptionDto {
   id: string;
@@ -27,4 +28,26 @@ export class SubscriptionResponseDto {
     });
     return this.subscriptions;
   }
+}
+
+export class CreateSubscriptionRequestDto {
+  @IsEmail()
+  public email: string;
+
+  @IsString()
+  @IsOptional()
+  public firstName: string;
+
+  @IsString()
+  @IsOptional()
+  public gender: string;
+
+  @IsDateString()
+  public dateOfBirth: string;
+
+  @IsBoolean()
+  public flagForConsent: boolean;
+
+  @IsNumber()
+  public newsletterId: number;
 }

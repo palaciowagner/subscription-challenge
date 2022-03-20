@@ -1,4 +1,5 @@
 import App from '@/app';
+import { CreateSubscriptionRequestDto } from '@/dtos/subscription.dto';
 import SubscriptionsRoute from '@/routes/subscriptions.route';
 import SubscriptionsService from '@services/subscriptions.service';
 import request from '../../hooks/supertest.hook';
@@ -63,6 +64,35 @@ describe('Subscriptions Route', () => {
       const app = new App([subscriptionsRoute]);
       const content = await request(app.getServer()).get(`${subscriptionsRoute.path}`).expect(204);
       expect(content.text).toEqual('');
+    });
+  });
+
+  describe('[POST] /subscriptions', () => {
+    it('should return 201 ACCEPTED and return subscription', async () => {
+      const subscriptionsRoute = new SubscriptionsRoute();
+      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+
+      const subscriptionRequest: CreateSubscriptionRequestDto = {
+        email: 'test@email.com',
+        firstName: 'Wagner',
+        gender: 'Other',
+        dateOfBirth: new Date('1994-04-06').toISOString(),
+        flagForConsent: true,
+        newsletterId: 345,
+      };
+
+      const createdResponse = {
+        id: 1,
+        ...subscriptionRequest,
+      };
+
+      mockedSubscriptionService.createSubscription = jest.fn().mockResolvedValue(createdResponse);
+
+      const app = new App([subscriptionsRoute]);
+      const content = await request(app.getServer()).post(`${subscriptionsRoute.path}`).send(subscriptionRequest).expect(201);
+      expect(mockedSubscriptionService.createSubscription).toHaveBeenCalled();
+      expect(content.text).toContain(JSON.stringify(createdResponse));
     });
   });
 });
