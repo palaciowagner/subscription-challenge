@@ -1,0 +1,39 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+      "target": "es2017",
+      "lib": ["es2017", "esnext.asynciterable"],
+      "typeRoots": ["node_modules/@types"],
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node",
+      "module": "commonjs",
+      "pretty": true,
+      "sourceMap": true,
+      "declaration": true,
+      "outDir": "dist",
+      "allowJs": true,
+      "noEmit": false,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "importHelpers": true,
+      "baseUrl": "src",
+      "types": ["@types/jest"],
+      "paths": {
+        "@/*": ["*"],
+        "@clients/*": ["clients/*"],
+        "@config": ["src/config"],
+        "@dtos/*": ["dtos/*"],
+        "@exceptions/*": ["exceptions/*"],
+        "@services/*": ["services/*"],
+        "@utils/*": ["src/utils/*"],
+        "@consumers/*": ["src/consumers/*"],
+        "@interfaces/*": ["src/interfaces/*"]
+      }
+    },
+    "include": ["src/**/*.ts", "src/**/*.json", ".env", "tests/**/*.test.ts"],
+    "exclude": ["node_modules", "src/http", "src/logs"]
+  }
+  
