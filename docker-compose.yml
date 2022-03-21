@@ -13,6 +13,7 @@ services:
     networks:
       - public
       - private
+
   subscription_core:
     build:
       context: ./subscription-core
@@ -45,8 +46,27 @@ services:
       - ./subscription-bff:/app
       - /app/node_modules
     restart: 'unless-stopped'
+    depends_on:
+      - subscription_core
     networks:
       - public
+
+  subscription_mailing:
+    build:
+      context: ./subscription-mailing
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: subscription_mailing
+    ports:
+      - '7000:7000'
+    volumes:
+      - ./subscription-mailing:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - private
+    depends_on:
+      - kafka
 
   pg:
     image: bitnami/postgresql:11-debian-10
@@ -60,7 +80,7 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root"]
+      test: [ "CMD-SHELL", "pg_isready -U root" ]
       interval: 5s
       timeout: 5s
       retries: 5
