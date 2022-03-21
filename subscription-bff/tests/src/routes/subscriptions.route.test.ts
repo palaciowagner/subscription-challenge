@@ -93,6 +93,7 @@ describe('Subscriptions Route', () => {
       const content = await request(app.getServer()).post(`${subscriptionsRoute.path}`).send(subscriptionRequest).expect(201);
       expect(mockedSubscriptionService.createSubscription).toHaveBeenCalled();
       expect(content.text).toContain(JSON.stringify(createdResponse));
+      expect(content.header['set-cookie']).toEqual(expect.arrayContaining([expect.stringContaining('Authorization')]));
     });
   });
 

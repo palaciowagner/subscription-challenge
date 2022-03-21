@@ -1,9 +1,12 @@
+import { SECRET_KEY } from '@/config';
 import { HttpException } from '@/exceptions/HttpException';
+import { DataStoredInToken, TokenData } from '@/interfaces/auth.interface';
 import { Subscription } from '@/interfaces/subscription.interface';
 import SubscriptionsService from '@/services/subscriptions.service';
 import { logger } from '@/utils/logger';
 import { CreateSubscriptionRequestDto, SubscriptionResponseDto } from '@dtos/subscription.dto';
 import { NextFunction, Request, Response } from 'express';
+import { sign } from 'jsonwebtoken';
 
 export default class SubscriptionsController {
   public subscriptionService = new SubscriptionsService();
@@ -24,11 +27,14 @@ export default class SubscriptionsController {
   public createSubscription = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const subscriptionRequest: CreateSubscriptionRequestDto = req.body;
-
       const createdSubscription: Subscription = await this.subscriptionService.createSubscription(subscriptionRequest);
 
       const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([createdSubscription]);
 
+      const token = this.createToken(createdSubscription);
+      const cookie = this.createCookie(token);
+
+      res.setHeader('Set-Cookie', [cookie]);
       res.status(201).json({ data: subscriptionResponseDto, message: 'created' });
     } catch (error) {
       next(error);
@@ -58,4 +64,16 @@ export default class SubscriptionsController {
       next(error);
     }
   };
+
+  public createToken(subscription: Subscription): TokenData {
+    const dataStoredInToken: DataStoredInToken = { email: subscription.email };
+    const secretKey: string = SECRET_KEY;
+    const expiresIn: number = 60 * 60;
+
+    return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+  }
+
+  public createCookie(tokenData: TokenData): string {
+    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+  }
 }
