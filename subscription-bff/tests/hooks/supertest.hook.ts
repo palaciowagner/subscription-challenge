@@ -1,16 +1,16 @@
 import supertest from 'supertest';
 
 const hook =
-  (app: any, method: string = 'post') =>
+  (app: any, method: string = 'post', authorizationKey) =>
   args => {
-    return supertest(app)[method](args);
+    return supertest(app)[method](args).set('Authorization', `Bearer ${authorizationKey}`);
   };
 
-const request = app => ({
-  post: hook(app, 'post'),
-  get: hook(app, 'get'),
-  put: hook(app, 'put'),
-  delete: hook(app, 'delete'),
+const request = (app, authorizationKey = 'secretKey') => ({
+  post: hook(app, 'post', authorizationKey),
+  get: hook(app, 'get', authorizationKey),
+  put: hook(app, 'put', authorizationKey),
+  delete: hook(app, 'delete', authorizationKey),
 });
 
 export default request;

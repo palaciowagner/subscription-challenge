@@ -3,8 +3,12 @@ import { CreateSubscriptionRequestDto } from '@/dtos/subscription.dto';
 import SubscriptionsRoute from '@/routes/subscriptions.route';
 import SubscriptionsService from '@services/subscriptions.service';
 import request from '../../hooks/supertest.hook';
+import jwt from 'jsonwebtoken';
 
 jest.mock('@services/subscriptions.service');
+jest.mock('jsonwebtoken');
+
+const jwtMock = jwt as jest.Mocked<typeof import('jsonwebtoken')>;
 
 afterAll(async () => {
   await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
@@ -125,6 +129,16 @@ describe('Subscriptions Route', () => {
   });
 
   describe('[PUT] /subscriptions/:email/cancel', () => {
+    const defaultSubscription = {
+      id: 1,
+      email: 'test@email.com',
+      firstName: 'Wagner',
+      gender: 'Other',
+      dateOfBirth: new Date('1994-04-06').toISOString(),
+      flagForConsent: true,
+      newsletterId: 345,
+    };
+
     it('should accept cancel request and return 201 ACCEPTED', async () => {
       const subscriptionsRoute = new SubscriptionsRoute();
       subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
@@ -133,11 +147,38 @@ describe('Subscriptions Route', () => {
       const email = 'test@email.com';
 
       mockedSubscriptionService.cancel = jest.fn();
+      mockedSubscriptionService.getSubscription = jest.fn().mockReturnValue(defaultSubscription);
+
+      jwtMock.verify.mockImplementation(() => {
+        return { email };
+      });
 
       const app = new App([subscriptionsRoute]);
-      const content = await request(app.getServer()).put(`${subscriptionsRoute.path}/${email}/cancel`).expect(201);
+      const content = await request(app.getServer(), 'valid-key').put(`${subscriptionsRoute.path}/${email}/cancel`).expect(201);
+
       expect(mockedSubscriptionService.cancel).toHaveBeenCalled();
       expect(content.text).toContain(JSON.stringify({ message: `Subscription cancel request for ${email} was accepted` }));
     });
+
+    it('should fail canceling and return 403 FORBIDDEN when JWT token e-mail does not match with request', async () => {
+      const subscriptionsRoute = new SubscriptionsRoute();
+      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+
+      const email = 'test@email.com';
+
+      mockedSubscriptionService.cancel = jest.fn();
+      mockedSubscriptionService.getSubscription = jest.fn().mockReturnValue(defaultSubscription);
+
+      jwtMock.verify.mockImplementation(() => {
+        return { email: 'another-email@test.com' };
+      });
+
+      const app = new App([subscriptionsRoute]);
+      const content = await request(app.getServer(), 'invalid-key').put(`${subscriptionsRoute.path}/${email}/cancel`).expect(403);
+
+      expect(mockedSubscriptionService.cancel).not.toHaveBeenCalled();
+      expect(content.text).toContain(JSON.stringify({ message: `You're not allowed to perform this operation` }));
+    })
   });
 });
