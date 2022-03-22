@@ -3,7 +3,6 @@ import { HttpException } from '@/exceptions/HttpException';
 import { DataStoredInToken, TokenData } from '@/interfaces/auth.interface';
 import { Subscription } from '@/interfaces/subscription.interface';
 import SubscriptionsService from '@/services/subscriptions.service';
-import { logger } from '@/utils/logger';
 import { CreateSubscriptionRequestDto, SubscriptionResponseDto } from '@dtos/subscription.dto';
 import { NextFunction, Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
