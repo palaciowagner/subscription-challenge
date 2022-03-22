@@ -50,6 +50,18 @@ services:
       - subscription_core
     networks:
       - public
+      - redis
+
+  redis:
+    image: bitnami/redis:latest
+    container_name: redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - '6379:6379'
+    networks:
+      - private
+      - redis
 
   subscription_mailing:
     build:
@@ -133,6 +145,8 @@ networks:
   public:
     driver: bridge
   private:
+    driver: bridge
+  redis:
     driver: bridge
 
 volumes:
