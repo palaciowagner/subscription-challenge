@@ -68,10 +68,7 @@ export default class SubscriptionsController {
 
   private refreshCookie(res: Response<any, Record<string, any>>, token: TokenData) {
     const cookie = this.createCookie(token);
-
-    if (res.cookie['Authorization']) {
-      res.clearCookie['Authorization'];
-    }
+    res.clearCookie['Authorization'];
     res.setHeader('Set-Cookie', [cookie]);
   }
 

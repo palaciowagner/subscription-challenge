@@ -18,7 +18,7 @@ export const authMiddleware = (subscriptionsController: SubscriptionsController)
       const secretKey: string = SECRET_KEY;
       const { email } = verify(authorization, secretKey) as DataStoredInToken;
 
-      const foundSubscription = await subscriptionsController.subscriptionService.getSubscription(email);
+      const foundSubscription = await subscriptionsController.subscriptionService.getSubscription(req.params.email);
 
       if (!foundSubscription) {
         next(new HttpException(401, 'Wrong or expired authentication token'));
@@ -31,7 +31,6 @@ export const authMiddleware = (subscriptionsController: SubscriptionsController)
       req.subscription = foundSubscription;
       next();
     } catch (error) {
-      console.log(error);
       next(new HttpException(401, 'Wrong or expired authentication token'));
     }
   };
