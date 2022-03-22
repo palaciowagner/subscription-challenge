@@ -48,6 +48,10 @@ export default class SubscriptionsController {
 
       const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([foundSubscription]);
 
+      const token = this.createToken(foundSubscription);
+      const cookie = this.createCookie(token);
+
+      res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: subscriptionResponseDto, message: 'found' });
     } catch (error) {
       next(error);

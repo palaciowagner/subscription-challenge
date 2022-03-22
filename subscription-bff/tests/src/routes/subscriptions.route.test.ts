@@ -125,6 +125,7 @@ describe('Subscriptions Route', () => {
       const content = await request(app.getServer()).get(`${subscriptionsRoute.path}/${email}`).expect(200);
       expect(mockedSubscriptionService.getSubscription).toHaveBeenCalled();
       expect(content.text).toContain(JSON.stringify(defaultSubscription));
+      expect(content.header['set-cookie']).toEqual(expect.arrayContaining([expect.stringContaining('Authorization')]));
     });
   });
 

@@ -14,3 +14,4 @@ const request = (app, authorizationKey = 'secretKey') => ({
 });
 
 export default request;
+
