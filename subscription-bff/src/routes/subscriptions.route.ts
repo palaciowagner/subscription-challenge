@@ -10,7 +10,7 @@ export default class SubscriptionsRoute implements Routes {
   public path = '/subscriptions';
   public router = Router();
   public subscriptionsController = new SubscriptionsController();
-  private cache = redisClient;
+  public cache = redisClient();
 
   constructor() {
     this.initializeRoutes();

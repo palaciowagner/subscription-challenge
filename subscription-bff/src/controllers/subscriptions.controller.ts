@@ -31,9 +31,8 @@ export default class SubscriptionsController {
       const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([createdSubscription]);
 
       const token = this.createToken(createdSubscription);
-      const cookie = this.createCookie(token);
+      this.refreshCookie(res, token);
 
-      res.setHeader('Set-Cookie', [cookie]);
       res.status(201).json({ data: subscriptionResponseDto, message: 'created' });
     } catch (error) {
       next(error);
@@ -48,9 +47,8 @@ export default class SubscriptionsController {
       const subscriptionResponseDto = new SubscriptionResponseDto().mapFrom([foundSubscription]);
 
       const token = this.createToken(foundSubscription);
-      const cookie = this.createCookie(token);
+      this.refreshCookie(res, token);
 
-      res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: subscriptionResponseDto, message: 'found' });
     } catch (error) {
       next(error);
@@ -68,7 +66,16 @@ export default class SubscriptionsController {
     }
   };
 
-  public createToken(subscription: Subscription): TokenData {
+  private refreshCookie(res: Response<any, Record<string, any>>, token: TokenData) {
+    const cookie = this.createCookie(token);
+
+    if (res.cookie['Authorization']) {
+      res.clearCookie['Authorization'];
+    }
+    res.setHeader('Set-Cookie', [cookie]);
+  }
+
+  private createToken(subscription: Subscription): TokenData {
     const dataStoredInToken: DataStoredInToken = { email: subscription.email };
     const secretKey: string = SECRET_KEY;
     const expiresIn: number = 60 * 60;
@@ -76,7 +83,7 @@ export default class SubscriptionsController {
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
 
-  public createCookie(tokenData: TokenData): string {
+  private createCookie(tokenData: TokenData): string {
     return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
   }
 }

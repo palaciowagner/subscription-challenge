@@ -1,5 +1,4 @@
 import { CreateSubscriptionRequestDto } from '@/dtos/subscription.dto';
-import { Subscription } from '@/interfaces/subscription.interface';
 import SubscriptionsService from '@services/subscriptions.service';
 import axios, { AxiosResponse } from 'axios';
 

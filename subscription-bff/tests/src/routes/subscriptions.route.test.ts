@@ -5,11 +5,24 @@ import SubscriptionsService from '@services/subscriptions.service';
 import request from '../../hooks/supertest.hook';
 import jwt from 'jsonwebtoken';
 
+jest.mock('express-redis-cache', () => {
+  return () => ({
+    ...(jest.requireActual('express-redis-cache') as object),
+    route: jest.fn().mockReturnValue((req, res, next) => next()),
+  });
+});
 jest.mock('@services/subscriptions.service');
 jest.mock('jsonwebtoken');
 
 const jwtMock = jwt as jest.Mocked<typeof import('jsonwebtoken')>;
 
+let subscriptionsRoute: SubscriptionsRoute;
+let mockedSubscriptionService: SubscriptionsService;
+beforeAll(async () => {
+  subscriptionsRoute = new SubscriptionsRoute();
+  subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
+  mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
+});
 afterAll(async () => {
   await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
 });
@@ -17,10 +30,6 @@ afterAll(async () => {
 describe('Subscriptions Route', () => {
   describe('[GET] /subscriptions', () => {
     it('should return status 200 OK and return all subscriptions', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
-
       const mockedResponse = [
         {
           id: 1,
@@ -59,10 +68,6 @@ describe('Subscriptions Route', () => {
     });
 
     it('should return 204 NO CONTENT and empty data when API does not return subscriptions', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
-
       mockedSubscriptionService.findAllSubscriptions = jest.fn().mockResolvedValue([]);
 
       const app = new App([subscriptionsRoute]);
@@ -73,10 +78,6 @@ describe('Subscriptions Route', () => {
 
   describe('[POST] /subscriptions', () => {
     it('should return 201 ACCEPTED and return created subscription', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
-
       const subscriptionRequest: CreateSubscriptionRequestDto = {
         email: 'test@email.com',
         firstName: 'Wagner',
@@ -113,10 +114,6 @@ describe('Subscriptions Route', () => {
     };
 
     it('should return 200 OK and return found subscription', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
-
       const email = 'test@email.com';
 
       mockedSubscriptionService.getSubscription = jest.fn().mockResolvedValue(defaultSubscription);
@@ -141,9 +138,6 @@ describe('Subscriptions Route', () => {
     };
 
     it('should accept cancel request and return 201 ACCEPTED', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
 
       const email = 'test@email.com';
 
@@ -162,10 +156,6 @@ describe('Subscriptions Route', () => {
     });
 
     it('should fail canceling and return 403 FORBIDDEN when JWT token e-mail does not match with request', async () => {
-      const subscriptionsRoute = new SubscriptionsRoute();
-      subscriptionsRoute.subscriptionsController.subscriptionService = new SubscriptionsService();
-      const mockedSubscriptionService = subscriptionsRoute.subscriptionsController.subscriptionService;
-
       const email = 'test@email.com';
 
       mockedSubscriptionService.cancel = jest.fn();
@@ -180,6 +170,6 @@ describe('Subscriptions Route', () => {
 
       expect(mockedSubscriptionService.cancel).not.toHaveBeenCalled();
       expect(content.text).toContain(JSON.stringify({ message: `You're not allowed to perform this operation` }));
-    })
+    });
   });
 });
