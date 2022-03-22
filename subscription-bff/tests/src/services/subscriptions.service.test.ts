@@ -2,7 +2,13 @@ import { CreateSubscriptionRequestDto } from '@/dtos/subscription.dto';
 import SubscriptionsService from '@services/subscriptions.service';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('axios');
+jest.mock('axios', () => ({
+  create: jest.fn().mockImplementation(()=> axios),
+  interceptors: {
+    request: { use: jest.fn(), eject: jest.fn() },
+    response: { use: jest.fn(), eject: jest.fn() },
+  },
+}));
 
 describe('Subscription Service', () => {
   const mockAxiosResponseDefault: AxiosResponse = {
@@ -28,12 +34,12 @@ describe('Subscription Service', () => {
       message: 'found',
     },
   };
-
+  
   describe('Get All Subscriptions', () => {
     it('should hit api client and return all subscriptions', async () => {
       axios.get = jest.fn().mockReturnValue(mockAxiosResponseDefault);
 
-      const subscriptionService = new SubscriptionsService(axios);
+      const subscriptionService = new SubscriptionsService(() => axios);
       const subscriptions = await subscriptionService.findAllSubscriptions();
 
       expect(axios.get).toHaveBeenCalled();
@@ -46,7 +52,7 @@ describe('Subscription Service', () => {
     it('should create and return subscription ID', async () => {
       axios.post = jest.fn().mockReturnValue({ ...mockAxiosResponseDefault });
 
-      const subscriptionService = new SubscriptionsService(axios);
+      const subscriptionService = new SubscriptionsService(() => axios);
 
       const created = await subscriptionService.createSubscription(defaultRequestDto);
 
@@ -57,7 +63,7 @@ describe('Subscription Service', () => {
     it('should return null if fails creating', async () => {
       axios.post = jest.fn().mockReturnValue({ ...mockAxiosResponseDefault, status: 409, data: undefined });
 
-      const subscriptionService = new SubscriptionsService(axios);
+      const subscriptionService = new SubscriptionsService(() => axios);
 
       const created = await subscriptionService.createSubscription(defaultRequestDto);
 
@@ -70,7 +76,7 @@ describe('Subscription Service', () => {
     it('should hit api client and return single subscription', async () => {
       axios.get = jest.fn().mockReturnValue(mockAxiosResponseDefault);
 
-      const subscriptionService = new SubscriptionsService(axios);
+      const subscriptionService = new SubscriptionsService(() => axios);
       const email = 'another-test@email.com';
       const subscriptions = await subscriptionService.getSubscription(email);
 
@@ -83,7 +89,7 @@ describe('Subscription Service', () => {
     it('should call API client but not expect its return', async () => {
       axios.put = jest.fn();
 
-      const subscriptionService = new SubscriptionsService(axios);
+      const subscriptionService = new SubscriptionsService(() => axios);
       const email = 'another-test@email.com';
       await subscriptionService.cancel(email);
 
