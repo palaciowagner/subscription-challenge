@@ -21,20 +21,20 @@ export class KafkaConsumer implements MessageHandler {
     this.topicName = topicName;
   }
 
-  handle = async (messagePayload: EachMessagePayload) => {
+  async handle(messagePayload: EachMessagePayload) {
     const { topic, partition, message } = messagePayload;
     const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
     logger.info(`- ${prefix} ${message.key}#${message.value}`);
-  };
+  }
 
-  public create = (): Consumer => {
+  public create(): Consumer {
     const kafka = new Kafka({
       clientId: KAFKA_CLIENT_GROUP,
       brokers: [KAFKA_BROKER],
     });
     const consumer = kafka.consumer({ groupId: KAFKA_CONSUMER_GROUP });
     return consumer;
-  };
+  }
 
   public async listen(): Promise<void> {
     const topic: ConsumerSubscribeTopic = {

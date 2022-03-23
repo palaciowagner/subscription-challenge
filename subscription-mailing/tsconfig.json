@@ -24,13 +24,13 @@
       "paths": {
         "@/*": ["*"],
         "@clients/*": ["clients/*"],
-        "@config": ["src/config"],
-        "@dtos/*": ["dtos/*"],
+        "@config": ["config"],
         "@exceptions/*": ["exceptions/*"],
         "@services/*": ["services/*"],
-        "@utils/*": ["src/utils/*"],
-        "@consumers/*": ["src/consumers/*"],
-        "@interfaces/*": ["src/interfaces/*"]
+        "@utils/*": ["utils/*"],
+        "@consumers/*": ["consumers/*"],
+        "@interfaces/*": ["interfaces/*"],
+        "@connections/*": ["connections/*"]
       }
     },
     "include": ["src/**/*.ts", "src/**/*.json", ".env", "tests/**/*.test.ts"],
