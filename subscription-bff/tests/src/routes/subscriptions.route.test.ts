@@ -67,12 +67,12 @@ describe('Subscriptions Route', () => {
       expect(content.text).toContain(JSON.stringify(mockedResponse));
     });
 
-    it('should return 204 NO CONTENT and empty data when API does not return subscriptions', async () => {
+    it('should return 404 NOT FOUND and empty data when API does not return subscriptions', async () => {
       mockedSubscriptionService.findAllSubscriptions = jest.fn().mockResolvedValue([]);
 
       const app = new App([subscriptionsRoute]);
-      const content = await request(app.getServer()).get(`${subscriptionsRoute.path}`).expect(204);
-      expect(content.text).toEqual('');
+      const content = await request(app.getServer()).get(`${subscriptionsRoute.path}`).expect(404);
+      expect(content.text).toEqual('{"message":"No subscriptions found"}');
     });
   });
 
@@ -138,7 +138,6 @@ describe('Subscriptions Route', () => {
     };
 
     it('should accept cancel request and return 201 ACCEPTED', async () => {
-
       const email = 'test@email.com';
 
       mockedSubscriptionService.cancel = jest.fn();

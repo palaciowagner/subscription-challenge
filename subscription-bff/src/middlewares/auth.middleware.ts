@@ -1,9 +1,8 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { NextFunction, RequestHandler, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, RequestWithSubscription } from '@interfaces/auth.interface';
-import SubscriptionsService from '@/services/subscriptions.service';
 import SubscriptionsController from '@/controllers/subscriptions.controller';
 
 export const authMiddleware = (subscriptionsController: SubscriptionsController): RequestHandler => {
