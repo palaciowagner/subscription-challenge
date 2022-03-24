@@ -1,6 +1,8 @@
 import { HttpException } from '@/exceptions/HttpException';
+import { logger } from '@/utils/logger';
 export const errorHandler = error => {
-  if (error) {
+  logger.error('A downstream error occured');
+  if (error && error.response) {
     const {
       response: { status, data: message },
     } = error;
