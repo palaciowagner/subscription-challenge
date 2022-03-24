@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "85429cb5-38d6-466a-9b46-0e148baced08",
+		"name": "Subscriptions Endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "BFF",
+			"item": [
+				{
+					"name": "[POST] Create Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has content\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.content).to.have.length > 0;",
+									"    pm.expect(jsonData).to.not.have.property(\"errors\");",
+									"",
+									"    var data = JSON.parse(responseBody).data;",
+									"    pm.environment.set(\"email\", data[0].email);",
+									"});",
+									"",
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201, 202]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"wagner@test.com\",\n    \"firstName\": \"Wagner\",\n    \"dateOfBirth\": \"1994-06-04\",\n    \"flagForConsent\": true,\n    \"newsletterId\": 3043\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bff_url}}/subscriptions",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[GET] Subscription by Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bff_url}}/subscriptions/{{email}}",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"{{email}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[GET] All Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{bff_url}}/subscriptions",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PUT] Cancel Subscription",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{bff_url}}/subscriptions/{{email}}/cancel",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"{{email}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Core",
+			"item": [
+				{
+					"name": "[POST] Create Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has content\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.content).to.have.length > 0;",
+									"    pm.expect(jsonData).to.not.have.property(\"errors\");",
+									"",
+									"    var data = JSON.parse(responseBody).data;",
+									"    pm.environment.set(\"email\", data.email);",
+									"});",
+									"",
+									"pm.test(\"Successful GET request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201, 202]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{api-key}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"wagner@test.com\",\n    \"firstName\": \"Wagner\",\n    \"dateOfBirth\": \"1994-06-04\",\n    \"flagForConsent\": true,\n    \"newsletterId\": 3043\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{core_url}}/subscriptions",
+							"host": [
+								"{{core_url}}"
+							],
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[GET] All Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{core_url}}/subscriptions",
+							"host": [
+								"{{core_url}}"
+							],
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[GET] Subscription by Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{bff_url}}/subscriptions/{{email}}",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"{{email}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PUT] Cancel Subscription",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{bff_url}}/subscriptions/{{email}}/cancel",
+							"host": [
+								"{{bff_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"{{email}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
