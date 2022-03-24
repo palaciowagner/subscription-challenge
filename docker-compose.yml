@@ -22,17 +22,14 @@ services:
     container_name: subscription_core
     ports:
       - '3000:3000'
-    env_file:
-      - ./subscription-core/.env.development.local
     restart: 'unless-stopped'
     networks:
       - private
     links:
       - pg
     volumes:
-      - type: bind
-        source: ./subscription-core
-        target: '/app'
+      - ./subscription-core:/app
+      - /app/node_modules
     depends_on:
       pg:
         condition: service_healthy
@@ -45,16 +42,13 @@ services:
     container_name: subscription_bff
     ports:
       - '5000:5000'
-    env_file:
-      - ./subscription-bff/.env.development.local
     restart: 'unless-stopped'
     networks:
       - public
       - redis
     volumes:
-      - type: bind
-        source: ./subscription-bff
-        target: '/app'
+      - ./subscription-bff:/app
+      - /app/node_modules
     depends_on:
       - subscription_core
 
@@ -77,15 +71,12 @@ services:
     container_name: subscription_mailing
     ports:
       - '7000:7000'
-    env_file:
-      - ./subscription-mailing/.env.development.local
     restart: 'unless-stopped'
     networks:
       - private
     volumes:
-      - type: bind
-        source: ./subscription-mailing
-        target: '/app'
+      - ./subscription-mailing:/app
+      - /app/node_modules
     depends_on:
       kafka:
         condition: service_healthy
@@ -169,3 +160,7 @@ volumes:
   data:
     driver: local
   database:
+  subscription-core:
+  subscription-bff:
+  subscription-mailing:
+  
