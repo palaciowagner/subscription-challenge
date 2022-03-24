@@ -16,12 +16,12 @@ export class KafkaConsumer implements MessageHandler {
   private kafkaConsumer: Consumer;
   private topicName: string;
 
-  public constructor(topicName: string) {
+  constructor(topicName: string) {
     this.kafkaConsumer = this.create();
     this.topicName = topicName;
   }
 
-  async handle(messagePayload: EachMessagePayload) {
+  public async handle(messagePayload: EachMessagePayload) {
     const { topic, partition, message } = messagePayload;
     const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
     logger.info(`- ${prefix} ${message.key}#${message.value}`);

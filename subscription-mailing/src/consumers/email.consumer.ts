@@ -17,11 +17,12 @@ export default class EmailTopicConsumer
   }
 
   handle = async (messagePayload: EachMessagePayload): Promise<void> => {
-    const {
-      message: { value },
-    } = messagePayload;
+    const { message } = messagePayload;
 
-    await this._emailService.send({ content: value } as EmailMessage);
+    await this._emailService.send({
+      ...message,
+      content: message.value,
+    });
 
     super.handle(messagePayload);
   };

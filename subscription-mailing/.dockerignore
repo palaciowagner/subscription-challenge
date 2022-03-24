@@ -1,0 +1,26 @@
+# compiled output
+**/.vscode/
+node_modules/
+dist/
+
+# code formatter
+.eslintrc
+.eslintignore
+.editorconfig
+.huskyrc
+.lintstagedrc.json
+.prettierc
+
+# test
+jest.config.js
+
+# docker
+docker-compose.yml
+
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+src/logs/
+yarn-error.log
+.git

@@ -20,6 +20,7 @@
     "dotenv": "^16.0.0",
     "envalid": "^7.3.0",
     "kafkajs": "^1.16.0",
+    "reflect-metadata": "^0.1.13",
     "winston": "^3.6.0",
     "winston-daily-rotate-file": "^4.6.1"
   },

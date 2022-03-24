@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { KafkaConsumer } from "@/connections/kafka.connection";
 import { NODE_ENV, PORT } from "@/config";
 import { logger } from "@/utils/logger";
