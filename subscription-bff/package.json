@@ -6,12 +6,15 @@
   "license": "ISC",
   "scripts": {
     "start": "yarn run build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
+    "predev": "yarn run swagger",
+    "prebuild": "yarn run swagger",
+    "dev": "concurrently \"cross-env NODE_ENV=development nodemon\" \"nodemon -x tsoa spec\"",
     "build": "tsc && tsc-alias",
     "test": "jest --forceExit --detectOpenHandles",
     "test:watch": "jest --forceExit --detectOpenHandles --watchAll",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "yarn run lint -- --fix"
+    "lint:fix": "yarn run lint -- --fix",
+    "swagger": "tsoa spec"
   },
   "dependencies": {
     "axios": "^0.26.1",
@@ -31,6 +34,7 @@
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
+    "tsoa": "^3.14.1",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
@@ -53,6 +57,7 @@
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
+    "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",

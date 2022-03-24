@@ -6,10 +6,13 @@ import SubscriptionsService from '@/services/subscriptions.service';
 import { CreateSubscriptionRequestDto, SubscriptionResponseDto } from '@dtos/subscription.dto';
 import { NextFunction, Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
+import { Get, Route, Post, Put, Controller } from 'tsoa';
 
-export default class SubscriptionsController {
+@Route('/subscriptions')
+export class SubscriptionsController extends Controller {
   public subscriptionService = new SubscriptionsService();
 
+  @Get('/')
   public getAllSubscriptions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const findAllSubscriptionsResponse: Subscription[] = await this.subscriptionService.findAllSubscriptions();
@@ -23,6 +26,7 @@ export default class SubscriptionsController {
     }
   };
 
+  @Post('/')
   public createSubscription = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const subscriptionRequest: CreateSubscriptionRequestDto = req.body;
@@ -39,6 +43,7 @@ export default class SubscriptionsController {
     }
   };
 
+  @Get('/{email}')
   public getSubscriptionByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const subscriptionEmail = String(req.params.email);
@@ -55,6 +60,7 @@ export default class SubscriptionsController {
     }
   };
 
+  @Put('/{email}/cancel')
   public cancelSubscriptionByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const subscriptionEmail = String(req.params.email);
@@ -84,3 +90,5 @@ export default class SubscriptionsController {
     return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
   }
 }
+
+export default SubscriptionsController;

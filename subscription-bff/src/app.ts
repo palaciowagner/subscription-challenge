@@ -64,20 +64,46 @@ class App {
     });
   }
 
-  private initializeSwagger() {
-    const options = {
-      swaggerDefinition: {
-        info: {
-          title: 'REST API',
-          version: '1.0.0',
-          description: 'Subscription BFF REST Endpoints',
-        },
-      },
-      apis: ['swagger.yaml'],
-    };
+  // private initializeSwagger() {
+  //   const options = {
+  //     swaggerDefinition: {
+  //       info: {
+  //         title: 'REST API',
+  //         version: '1.0.0',
+  //         description: 'Subscription BFF REST Endpoints',
+  //       },
+  //     },
+  //     apis: ['swagger.yaml'],
+  //   };
 
-    const specs = swaggerJSDoc(options);
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+  //   const specs = swaggerJSDoc(options);
+  //   this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+  // }
+
+  private initializeSwagger() {
+    // const options: swaggerJSDoc.Options = {
+    //   swaggerDefinition: {
+    //     info: {
+    //       title: 'REST API',
+    //       version: '1.0.0',
+    //       description: 'Subscription BFF REST Endpoints',
+    //     },
+    //   },
+    //   swaggerOptions: {
+    //     url: '/swagger.json',
+    //   },
+    // };
+
+    // const specs = swaggerJSDoc(options);
+    this.app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, {
+        swaggerOptions: {
+          url: 'dist/swagger.json',
+        },
+      }),
+    );
   }
 
   private initializeErrorHandling() {
