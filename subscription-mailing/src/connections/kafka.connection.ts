@@ -39,7 +39,7 @@ export class KafkaConsumer implements MessageHandler {
   public async listen(): Promise<void> {
     const topic: ConsumerSubscribeTopic = {
       topic: this.topicName,
-      fromBeginning: false,
+      fromBeginning: true,
     };
 
     try {

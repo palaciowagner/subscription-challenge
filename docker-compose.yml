@@ -29,6 +29,10 @@ services:
       - private
     links:
       - pg
+    volumes:
+      - type: bind
+        source: ./subscription-core
+        target: '/app'
     depends_on:
       pg:
         condition: service_healthy
@@ -47,6 +51,10 @@ services:
     networks:
       - public
       - redis
+    volumes:
+      - type: bind
+        source: ./subscription-bff
+        target: '/app'
     depends_on:
       - subscription_core
 
@@ -74,10 +82,13 @@ services:
     restart: 'unless-stopped'
     networks:
       - private
+    volumes:
+      - type: bind
+        source: ./subscription-mailing
+        target: '/app'
     depends_on:
       kafka:
         condition: service_healthy
-
 
   pg:
     image: bitnami/postgresql:11-debian-10
