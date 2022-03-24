@@ -1,5 +1,3 @@
-.PHONY: unit-test subscription-%
-
 comma:=,
 
 start-dev:
@@ -7,6 +5,3 @@ start-dev:
 
 unit-test:
 	yarn run test
-
-subscription-%:
-	$(foreach unit-test,$(subst $(comma), ,$(@:subscription-%=%)),test/test$(test))
