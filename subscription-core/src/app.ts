@@ -10,7 +10,6 @@ import { dbConnection } from '@/connections/db.connection';
 import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
-import { apiKeyMiddleware } from './middlewares/auth.middleware';
 
 class App {
   public app: express.Application;
@@ -30,14 +29,16 @@ class App {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`=================================`);
-      logger.info(`======= ENV: ${this.env} =======`);
-      logger.info(`🚀 App listening on port ${this.port}`);
-      logger.info(`=================================`);
-    }).on('error', (err) => {
-      logger.error('Failed to start server', err);
-    });
+    this.app
+      .listen(this.port, () => {
+        logger.info(`=================================`);
+        logger.info(`======= ENV: ${this.env} =======`);
+        logger.info(`🚀 App listening on port ${this.port}`);
+        logger.info(`=================================`);
+      })
+      .on('error', err => {
+        logger.error('Failed to start server', err);
+      });
   }
 
   public getServer() {
@@ -57,7 +58,6 @@ class App {
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach(route => {
-      this.app.use(apiKeyMiddleware);
       this.app.use('/', route.router);
     });
   }

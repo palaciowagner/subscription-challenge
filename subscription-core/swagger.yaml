@@ -1,92 +1,171 @@
 tags:
-- name: subscription
-  description: Subscriptions API
+  - name: subscriptions
+    description: Subscriptions BFF API
 
 paths:
-# [GET] All Subscriptions
+  # [GET] All Subscriptions
   /subscriptions:
     get:
       tags:
-      - subscriptions
-      summary: Returns all subscriptions
+        - subscriptions
+      summary: Returns all subscriptions.
+      security:
+        - api_key: []
       responses:
         200:
-          description: 'OK'
-        204:
-          description: 'No Content'
-        500:
-          description: 'Server Error'
+          description: 'Returns all persisted subscriptions.  Use `Cache-Control=no-cache` header to avoid caching results.'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/api_response'
         401:
           description: 'Unauthorized'
+        404:
+          description: 'No subscriptions were found'
+        500:
+          description: 'Server Error'
 
-# [POST] Subscription
+    # [POST] Subscription
     post:
       tags:
-      - subscriptions
-      summary: Creates a new subscription / Activates a subscription if e-mail exists but currently is deactivated
+        - subscriptions
+      summary: Creates / Activates a subscription
+      description: >
+        Creates a new subscription / Activates a Subscription if e-mail exists but is currently set as inactive. (isActive = false)
       parameters:
-      - name: body
-        in: body
-        description: Subscription Data
-        required: true
-        schema:
-          $ref: '#/definitions/subscriptions'
+        - name: body
+          in: body
+          description: Subscription data information to be saved
+          required: true
+          schema:
+            $ref: '#/definitions/subscriptions'
+      security:
+        - api_key: []
       responses:
         201:
-          description: 'Created'
+          description: >
+            Successfully created.
+            The authorization token is returned in a cookie named `Authorization`. You may need to include this cookie on header to be able to cancel a subscription. Check subscriptions/{email}/cancel endpoint.
+          schema:
+            type: 'object'
+            $ref: '#/definitions/api_response'
+          headers:
+            Set-Cookie:
+              schema:
+                type: 'string'
+                example: 'Authorization=the-jwt-token; HttpOnly; Max-Age=1000;'
         400:
-          description: 'Bad Request'
+          description: 'Bad request. Provided request payload may be invalid. Gender and First Name are optional fields, all the others are required.'
         401:
           description: 'Unauthorized'
         409:
-          description: 'Conflict'
+          description: 'Conflict. Subscription for the provided e-mail already exists.'
         500:
-          description: 'Server Error'
-        
+          description: 'Downstream Server Error'
 
-# [GET] Subscription
+  # [GET] Subscription by email
   /subscriptions/{email}:
     get:
       tags:
-      - subscriptions
-      summary: Gets details of a single Subscription finding by its e-mail
+        - subscriptions
+      summary: Get Subscription Details
+      description: >
+        Gets details of a single Subscription searching for its e-mail. Use `Cache-Control=no-cache` header to avoid caching results.
       parameters:
-      - name: email
-        in: path
-        description: Subscription E-mail
-        required: true
-        type: string
+        - name: email
+          in: path
+          description: The subscribed e-mail
+          required: true
+          type: string
+      security:
+        - api_key: []
       responses:
         200:
-          description: 'OK'
+          description: 'Returns a subscription.  Use `Cache-Control=no-cache` header to avoid caching results.'
+          schema:
+            type: 'object'
+            $ref: '#/definitions/api_response'
         401:
           description: 'Unauthorized'
         500:
           description: 'Server Error'
-        
 
-# [PUT] Cancels subscription by e-mail
+    # [PUT] Cancels subscription by e-mail
+  /subscriptions/{email}/cancel:
     put:
       tags:
-      - subscriptions
-      summary: Cancels a subscription, inactivating it in the database
+        - subscriptions
+      summary: >
+        Cancels an active subscription by the provided e-mail.
+      description: >
+        Cancels an active subscription by the provided e-mail. 
+        Needs either a header or cookie `Authorization` with a valid JWT token.
+        Hit `GET /subscriptions/{email}` to refresh the token.
       parameters:
-      - name: email
-        in: path
-        description: Subscription E-mail
-        required: true
-        type: string
+        - name: email
+          in: path
+          description: Subscription E-mail
+          required: true
+          type: string
+      security:
+        - api_key: []
       responses:
-        200:
-          description: 'OK'
+        201:
+          description: 'A cancel request was accepted.'
         400:
           description: 'Bad Request'
         401:
-          description: 'Unauthorized'
+          description: 'JWT token may be expired or differs from the e-mail. Refresh the token by hitting `GET /subscriptions/{email}` providing the e-mail you want to cancel.'
         500:
           description: 'Server Error'
-        
 
 schemes:
- - https
- - http
+  - https
+  - http
+
+securityDefinitions:
+  api_key:
+    type: 'apiKey'
+    name: 'x-api-key'
+    in: 'header'
+
+definitions:
+  api_response:
+    type: 'object'
+    properties:
+      data:
+        type: 'array'
+        items:
+          type: 'object'
+          $ref: '#/definitions/subscriptions'
+      message:
+        type: 'string'
+
+  subscriptions:
+    type: 'object'
+    required:
+      - 'email'
+      - 'dateOfBirth'
+      - 'flagForConsent'
+      - 'newsletterId'
+    properties:
+      id:
+        type: 'integer'
+        format: 'int64'
+      email:
+        type: 'string'
+        format: 'email'
+      firstName:
+        type: 'string'
+        example: 'Wagner'
+      gender:
+        type: 'string'
+      dateOfBirth:
+        type: 'string'
+        format: 'date-time'
+      flagForConsent:
+        type: 'boolean'
+        default: true
+      newsletterId:
+        type: 'integer'
+        format: 'int64'
