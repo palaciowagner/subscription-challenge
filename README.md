@@ -110,17 +110,7 @@ In terms of performance, a caching strategy was implemented in the **subscriptio
  - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable)
  - [Docker](https://docs.docker.com/get-docker/)
  - [Docker compose](https://docs.docker.com/compose/install/)
-
-### Running Tests
-From your terminal, go into the target project and run `yarn test`
-
-Example:
-```
-   cd subscription-core
-   yarn test
-```
 ### Running Locally
-
 1. Clone this repository
 
 ```
@@ -128,7 +118,8 @@ git clone https://github.com/palaciowagner/subscription-challenge.git
 ```
 
 2. Start Docker
-3. From the project root folder, either run
+3. For each sub-project, duplicate the `.env.example.local` file and change `example` to `development` in the file name, fill the environment variables secrets that were sent to you apart.
+4. From the project root folder, either run
 
 ```
 docker-compose up
@@ -140,6 +131,17 @@ make start-dev
 ```
 
 All infra-structure components and services should startup. This may take a few minutes, depending on your network and resources.
+
+### Running Tests
+1. For each sub-project, duplicate the `.env.example.local` file and change `example` to `test` in the file name, fill the environment variables secrets that were sent to you apart.
+
+2. From your terminal, go into the target project and run `yarn test`
+
+Example:
+```
+   cd subscription-core
+   yarn test
+```
 
 #### Local Access
  - [subscription-core](http://localhost:3000/) - Port number: 3000
