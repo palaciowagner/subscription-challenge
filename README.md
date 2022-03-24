@@ -146,6 +146,7 @@ Example:
 #### Local Access
  - [subscription-core](http://localhost:3000/) - Port number: 3000
  - [subscription-bff](http://localhost:5000/) - Port number: 5000
+ - [Kafka UI](http://localhost:8080) - Port number: 8080 - Check Kafka topics and consumer groups
 
 ### API Documentation
 
